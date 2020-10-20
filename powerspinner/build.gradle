@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.dokka'
+apply from: '../dependencies.gradle'
+apply from: '../publish.gradle'
+
+android {
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+        versionCode versions.versionCode
+        versionName versions.versionName
+    }
+    viewBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:$versions.androidxAppcompat"
+    implementation "androidx.recyclerview:recyclerview:$versions.recyclerView"
+    implementation "androidx.preference:preference-ktx:$versions.preference"
+    kapt "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
+}
+
+kotlin {
+    explicitApiWarning()
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    configuration {
+        moduleName = 'powerspinner'
+    }
+}
+
+tasks.withType(Javadoc) {
+    excludes = ['**/*.kt']
+    options.addBooleanOption('Xdoclint:none', true)
+}
+
+apply from: '../spotless.gradle'
